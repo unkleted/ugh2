@@ -1,0 +1,22 @@
+aws --profile acloud \
+  deploy create-deployment \
+  --application-name MyApplication \
+  --deployment-config-name CodeDeployDefault.OneAtATime \
+  --deployment-group-name ABRDeploymentGroup \
+  --description "My GitHub deployment demo" \
+  --github-location repository=unkleted/CodeDeployGitHubDemo,commitId=73fd829ef6c0e11c4908e7247f14bb75573d9dfa
+
+
+
+aws --profile acloud \
+  deploy create-deployment \
+  --application-name MyApplication \
+  --deployment-config-name CodeDeployDefault.OneAtATime \
+  --deployment-group-name CMSDeploymentGroup \
+  --description "My GitHub deployment demo" \
+  --github-location repository=unkleted/CodeDeployGitHubDemo,commitId=73fd829ef6c0e11c4908e7247f14bb75573d9dfa
+  
+  
+  https://377938492601.signin.aws.amazon.com/console?region=us-east-1
+  
+  certbot certonly --dns-route53 --dns-route53-propagation-seconds 30 --register-unsafely-without-email --agree-tos -d abr.donkeywhiskers.com

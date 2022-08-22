@@ -1,0 +1,7 @@
+amazon-linux-extras install epel -y
+yum install certbot python-certbot-nginx -y
+
+sed -i 's/_;/abr.donkeywhiskers.com;/g' /etc/nginx/nginx.conf 
+
+# certbot --nginx --register-unsafely-without-email --agree-tos -d abr.donkeywhiskers.com
+# systemctl enable --now certbot-renew.timer
