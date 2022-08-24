@@ -20,3 +20,5 @@ aws --profile acloud \
   https://377938492601.signin.aws.amazon.com/console?region=us-east-1
   
   certbot certonly --dns-route53 --dns-route53-propagation-seconds 30 --register-unsafely-without-email --agree-tos -d abr.donkeywhiskers.com
+
+aws s3 --profile acloud sync files/etc/ s3://$(aws s3 --profile acloud ls | grep abrstuff | cut -f3 -d' ')/etc/
