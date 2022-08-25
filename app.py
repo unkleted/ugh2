@@ -2,10 +2,10 @@
 import aws_cdk as cdk
 
 from abr.abr_stack import AbrStack
-from abr.abr_stuff import AbrStuff
+from abr.abr_stuff import AbrScaffolding
 
 app = cdk.App()
-s1 = AbrStuff(app, "AbrStuff")
+s1 = AbrScaffolding(app, "AbrScaffolding")
 
 AbrStack(app, "AbrStack",
     # If you don't specify 'env', this stack will be environment-agnostic.

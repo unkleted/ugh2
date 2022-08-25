@@ -2,9 +2,8 @@ yum update --security -y
 
 amazon-linux-extras enable nginx1 epel
 
+mkdir -p /var/www/html
+
 yum install https://rpms.remirepo.net/enterprise/remi-release-7.rpm -y
 
-yum --disableplugin=priorities --enablerepo=remi-php72 install amazon-cloudwatch-agent nginx php-cli php-pdo php-fpm php-json php-mysqlnd -y
-
-mkdir -p /var/www
-ln -s /usr/share/nginx/html /var/www/html
+yum --disableplugin=priorities --enablerepo=remi-php72 install -y amazon-cloudwatch-agent nginx php-cli php-pdo php-fpm php-json php-mysqlnd drush

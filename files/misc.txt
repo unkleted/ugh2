@@ -1,24 +1,32 @@
 aws --profile acloud \
   deploy create-deployment \
-  --application-name MyApplication \
+  --application-name ABR \
   --deployment-config-name CodeDeployDefault.OneAtATime \
-  --deployment-group-name ABRDeploymentGroup \
+  --deployment-group-name WEBDeploymentGroup \
   --description "My GitHub deployment demo" \
-  --github-location repository=unkleted/CodeDeployGitHubDemo,commitId=73fd829ef6c0e11c4908e7247f14bb75573d9dfa
+  --github-location repository=unkleted/CodeDeployGitHubDemo,commitId=209a52cf5f401330746f80c9fc12a98813528860
 
 
 
 aws --profile acloud \
   deploy create-deployment \
-  --application-name MyApplication \
+  --application-name ABR \
   --deployment-config-name CodeDeployDefault.OneAtATime \
   --deployment-group-name CMSDeploymentGroup \
   --description "My GitHub deployment demo" \
-  --github-location repository=unkleted/CodeDeployGitHubDemo,commitId=73fd829ef6c0e11c4908e7247f14bb75573d9dfa
+  --github-location repository=unkleted/CodeDeployGitHubDemo,commitId=209a52cf5f401330746f80c9fc12a98813528860
   
   
   https://377938492601.signin.aws.amazon.com/console?region=us-east-1
   
   certbot certonly --dns-route53 --dns-route53-propagation-seconds 30 --register-unsafely-without-email --agree-tos -d abr.donkeywhiskers.com
 
-aws s3 --profile acloud sync files/etc/ s3://$(aws s3 --profile acloud ls | grep abrstuff | cut -f3 -d' ')/etc/
+aws s3 --profile acloud sync files/etc/ s3://$(aws s3 --profile acloud ls | grep abrscaffolding | cut -f3 -d' ')/etc/
+
+aws --profile acloud \
+  deploy create-deployment \
+  --application-name MyApplication \
+  --deployment-config-name CodeDeployDefault.OneAtATime \
+  --deployment-group-name WEBDeploymentGroup \
+  --description "My GitHub deployment demo" \
+  --github-location repository=unkleted/CodeDeployGitHubDemo,commitId=a89b0998a5647771f53037b348a2b9ccedde8e17

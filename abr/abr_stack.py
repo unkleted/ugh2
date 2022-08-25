@@ -47,7 +47,7 @@ class AbrStack(Stack):
             generation=ec2.AmazonLinuxGeneration.AMAZON_LINUX_2
         )
 
-        abr_asg = autoscaling.AutoScalingGroup(self, "ABR",
+        web_asg = autoscaling.AutoScalingGroup(self, "abr-web",
             vpc=myvpc,
             instance_type=ec2.InstanceType.of(
                 ec2.InstanceClass.BURSTABLE3_AMD, 
@@ -58,15 +58,14 @@ class AbrStack(Stack):
             max_capacity=10,
             health_check=autoscaling.HealthCheck.elb(
                 grace=Duration.minutes(2)
-            ),
-            # launch_template=template,
+            )
         )
 
-        abr_asg.scale_on_cpu_utilization("KeepSpareCPU",
+        web_asg.scale_on_cpu_utilization("KeepSpareCPU",
             target_utilization_percent=50
         )
 
-        cms_asg =autoscaling.AutoScalingGroup(self, "ABR-CMS",
+        cms_asg =autoscaling.AutoScalingGroup(self, "abr-cms",
             vpc=myvpc,
             instance_type=ec2.InstanceType.of(
                 ec2.InstanceClass.BURSTABLE3_AMD, 
@@ -86,7 +85,7 @@ class AbrStack(Stack):
             "AmazonSSMManagedInstanceCore",
             "AmazonS3ReadOnlyAccess"
         ]
-        my_asgs = [abr_asg, cms_asg]
+        my_asgs = [web_asg, cms_asg]
         for amp in aws_managed_policies:
             for asg in my_asgs:
                 asg.role.add_managed_policy(
@@ -101,20 +100,20 @@ class AbrStack(Stack):
         
         cms_asg.add_user_data(f"aws ec2 associate-address --instance-id $(curl -s http://169.254.169.254/latest/meta-data/instance-id) --allocation-id {elastic_ip.attr_allocation_id} --allow-reassociation --region us-east-1")
         with open('files/userdata.1') as f:
-            lines = f.read()
-        for asg in my_asgs:
-            asg.add_user_data(lines)
-            asg.add_user_data(f"aws s3 sync s3://{bucket.bucket_name}/etc/ /etc/")
+            lines1 = f.read()
         with open('files/userdata.2') as f:
-            lines = f.read()
+            lines2 = f.read()
         for asg in my_asgs:
-            asg.add_user_data(lines)
+            asg.add_user_data(lines1)
+            asg.add_user_data(f"aws s3 sync s3://{bucket.bucket_name}/etc/ /etc/")
+            asg.add_user_data(lines2)
+            
 
-        with open('files/certbot') as f:
+        with open('files/cms-stuff') as f:
             lines = f.read()
         cms_asg.add_user_data(lines)
         
-        lb = elbv2.ApplicationLoadBalancer(self, "LB",
+        lb = elbv2.ApplicationLoadBalancer(self, "abr-web-alb",
             vpc=myvpc,
             internet_facing=True
         )
@@ -123,20 +122,20 @@ class AbrStack(Stack):
 
         listener.add_targets("ApplicationFleet", 
             port=80, 
-            targets=[abr_asg]
+            targets=[web_asg]
         )
 
-        cms_group = codedeploy.ServerDeploymentGroup(self, "CodeDeployDeploymentGroup",
+        cms_group = codedeploy.ServerDeploymentGroup(self, "ABR-CMSCodeDeployDeploymentGroup",
             application=application,
             deployment_group_name="CMSDeploymentGroup",
             auto_scaling_groups=[cms_asg],
             install_agent=True
         )
 
-        abr_group = codedeploy.ServerDeploymentGroup(self, "ABRCodeDeployDeploymentGroup",
+        abr_group = codedeploy.ServerDeploymentGroup(self, "ABR-WEBCodeDeployDeploymentGroup",
             application=application,
-            deployment_group_name="ABRDeploymentGroup",
-            auto_scaling_groups=[abr_asg],
+            deployment_group_name="WEBDeploymentGroup",
+            auto_scaling_groups=[web_asg],
             install_agent=True
         )
 

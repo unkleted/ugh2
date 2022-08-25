@@ -9,7 +9,7 @@ from aws_cdk import (
 
 from constructs import Construct
 
-class AbrStuff(Stack):
+class AbrScaffolding(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -47,7 +47,7 @@ class AbrStuff(Stack):
         )
 
         self.application = codedeploy.ServerApplication(self, "CodeDeployApplication",
-            application_name="MyApplication"
+            application_name="ABR"
         )
 
         self.elastic_ip = ec2.CfnEIP(self, "EIP",
@@ -58,6 +58,6 @@ class AbrStuff(Stack):
             lines = f.read()
         param = ssm.StringParameter(self, "cwssm",
             description="CloudWatch agent configuration",
-            parameter_name="/ABR/AmazonCloudWatch-linux",
+            parameter_name="ABR-Log-Group",
             string_value=lines
         )
