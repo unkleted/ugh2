@@ -106,6 +106,7 @@ class AbrStack(Stack):
         for asg in my_asgs:
             asg.add_user_data(lines1)
             asg.add_user_data(f"aws s3 sync s3://{bucket.bucket_name}/etc/ /etc/")
+            asg.add_user_data(f"aws s3 sync s3://{bucket.bucket_name}/var/ /var/")
             asg.add_user_data(lines2)
             
 
@@ -127,14 +128,14 @@ class AbrStack(Stack):
 
         cms_group = codedeploy.ServerDeploymentGroup(self, "ABR-CMSCodeDeployDeploymentGroup",
             application=application,
-            deployment_group_name="CMSDeploymentGroup",
+            deployment_group_name="ABR-CMS",
             auto_scaling_groups=[cms_asg],
             install_agent=True
         )
 
         abr_group = codedeploy.ServerDeploymentGroup(self, "ABR-WEBCodeDeployDeploymentGroup",
             application=application,
-            deployment_group_name="WEBDeploymentGroup",
+            deployment_group_name="ABR-WEB",
             auto_scaling_groups=[web_asg],
             install_agent=True
         )
