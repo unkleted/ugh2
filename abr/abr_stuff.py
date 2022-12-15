@@ -11,15 +11,15 @@ from constructs import Construct
 
 class AbrScaffolding(Stack):
 
-    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
+    def __init__(self, scope: Construct, construct_id: str, cidr: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
         # The code that defines your stack goes here
 
-        self.bucket = s3.Bucket(self, "abr-conf-bucket")
+        # self.bucket = s3.Bucket(self, "abr-conf-bucket")
 
-        self.myvpc = ec2.Vpc(self, "abr-prod",
-            cidr="172.16.0.0/21",
+        self.myvpc = ec2.Vpc(self, "abr-"+construct_id,
+            cidr=cidr,
             max_azs=2,
             nat_gateways=1,
             subnet_configuration=[
@@ -42,22 +42,22 @@ class AbrScaffolding(Stack):
             ]
         )
 
-        self.log_group = logs.LogGroup(self, "Log Group",
-            log_group_name="ABR"
-        )
+        # self.log_group = logs.LogGroup(self, "Log Group",
+        #     log_group_name="ABR"
+        # )
 
         self.application = codedeploy.ServerApplication(self, "CodeDeployApplication",
-            application_name="ABR"
+            application_name="ABR-"+construct_id
         )
 
         self.elastic_ip = ec2.CfnEIP(self, "EIP",
             domain="vpc"
         )
 
-        with open('files/cwagent_copy') as f:
-            lines = f.read()
-        param = ssm.StringParameter(self, "cwssm",
-            description="CloudWatch agent configuration",
-            parameter_name="ABR-Log-Group",
-            string_value=lines
-        )
+        # with open('files/cwagent_copy') as f:
+        #     lines = f.read()
+        # param = ssm.StringParameter(self, "cwssm",
+        #     description="CloudWatch agent configuration",
+        #     parameter_name="ABR-Log-Group",
+        #     string_value=lines
+        # )

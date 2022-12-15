@@ -1,0 +1,4 @@
+amazon-linux-extras install epel nginx1 -y
+yum install python2-pip git ansible -y
+git clone https://github.com/unkleted/an-pu-tst.git /tmp/ansible-config
+cd /tmp/ansible-config && ansible-playbook -c local -l $(curl -s http://169.254.169.254/latest/meta-data/local-hostname) playbook.yml

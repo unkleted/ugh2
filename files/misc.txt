@@ -1,22 +1,30 @@
 aws --profile acloud \
   deploy create-deployment \
-  --application-name ABR \
+  --application-name ABR-prod-stuff \
   --deployment-config-name CodeDeployDefault.OneAtATime \
   --deployment-group-name ABR-WEB \
   --description "My GitHub deployment demo" \
   --github-location repository=unkleted/CodeDeployGitHubDemo,commitId=209a52cf5f401330746f80c9fc12a98813528860
 
-
+aad6aee818e0f66d83db398dcdcfdcf3dffb13e0 # broke
+209a52cf5f401330746f80c9fc12a98813528860
 
 aws --profile acloud \
   deploy create-deployment \
-  --application-name ABR \
+  --application-name ABR-stage-stuff \
   --deployment-config-name CodeDeployDefault.OneAtATime \
   --deployment-group-name ABR-CMS \
   --description "My GitHub deployment demo" \
-  --s3-location bucket=abrscaffolding-abrconfbucket6a6434c4-1ci8adp66kcnf,key=#169-962941150051152110.zip,bundleType=zip
-  # --github-location repository=unkleted/CodeDeployGitHubDemo,commitId=209a52cf5f401330746f80c9fc12a98813528860
+  --github-location repository=unkleted/CodeDeployGitHubDemo,commitId=209a52cf5f401330746f80c9fc12a98813528860
+  # --s3-location bucket=abrscaffolding-abrconfbucket6a6434c4-1ci8adp66kcnf,key=#169-962941150051152110.zip,bundleType=zip
   
+aws --profile acloud \
+  deploy create-deployment \
+  --application-name ABR-prod-stuff \
+  --deployment-config-name CodeDeployDefault.OneAtATime \
+  --deployment-group-name ABR-CMS \
+  --description "My GitHub deployment demo" \
+  --github-location repository=unkleted/CodeDeployGitHubDemo,commitId=209a52cf5f401330746f80c9fc12a98813528860
   
   https://377938492601.signin.aws.amazon.com/console?region=us-east-1
   
@@ -31,3 +39,7 @@ aws --profile acloud \
   --deployment-group-name WEBDeploymentGroup \
   --description "My GitHub deployment demo" \
   --github-location repository=unkleted/CodeDeployGitHubDemo,commitId=a89b0998a5647771f53037b348a2b9ccedde8e17
+
+  git pull && ansible-playbook -c local -l $(curl -s http://169.254.169.254/latest/meta-data/local-hostname) playbook.yml
+
+  ansible-inventory -i aws_ec2.yaml --list
